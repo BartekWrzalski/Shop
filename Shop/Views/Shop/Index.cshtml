@@ -1,0 +1,121 @@
+﻿@model IEnumerable<Shop.Models.Article>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<nav id="catNav"> Categories
+    <ul>
+        @foreach (var item in ViewData["CategoryId"] as List<Category>)
+        {
+            <li> 
+                <a asp-action="Select" asp-route-id="@item.Id">&bull; @item.Nazwa</a>
+            </li>
+        }
+    </ul>
+</nav>
+<br /><br />
+<table class="table" id="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nazwa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Photo)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nazwa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Nazwa)
+            </td>
+            <td>
+                @if (item.Photo == "noimage.jpg")
+                {
+                    <img src = "@("~/image/" + item.Photo)" asp-append-version=true width="75px" height="75px" /> 
+                }
+                else
+                {
+                    <img src = "@("~/upload/" + item.Photo)" asp-append-version=true width="75px" height="75px" /> 
+                }
+            </td>
+            <td>
+                <a asp-action="AddToCart" asp-route-id="@item.Id">Add to cart</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<button id="load" type="button" onclick="load();" class="btn-primary">
+    Load 4 more
+</button>
+
+
+@section Scripts {
+    <script>
+        let lastId = @Model.Last().Id;
+        console.log(lastId)
+
+        async function getCategoryName(id) {
+            let catname = await fetch(`/api/category/${id}`)
+            catname = await catname.json()
+            console.log(catname.nazwa)
+            return catname.nazwa
+        };
+
+        async function load() {
+            for (let i = 0; i < 4; i++) {
+                let category = document.cookie.split('; ').find(row => row.startsWith('Category=')).split('=')[1]; 
+                let art = null
+                if (category == -1) {
+                    art = await fetch (`/api/article/${lastId}/next`)
+                } else {
+                    art = await fetch (`/api/article/${lastId}/nextFromCategory/${category}`)
+                }
+                try {
+                    art = await art.json()
+                } catch {
+                    document.getElementById("load").setAttribute("disabled", "true")
+                    return
+                }
+                
+                const row = document.getElementById("table").insertRow(-1)
+                const nameCell = row.insertCell(-1)
+                const priceCell = row.insertCell(-1)
+                const categoryCell = row.insertCell(-1)
+                const imgCell = row.insertCell(-1)
+                const actionsCell = row.insertCell(-1)
+
+                nameCell.innerText = art.nazwa
+                priceCell.innerText = art.price
+                if (art.photo != "noimage.jpg") {
+                    imgCell.innerHTML = `<img src="/upload/${art.photo}" width="75px" height="75px"/>`
+                } else {
+                    imgCell.innerHTML = `<img src="/image/noimage.jpg" width="75px" height="75px"/>`
+                }
+                categoryCell.innerHTML = await getCategoryName(art.categoryId)
+                actionsCell.innerHTML = `<a href="/Shop/AddToCart?id=${art.id}">Add to cart</a>`
+
+                lastId = art.id
+            };
+        }
+    </script>
+}

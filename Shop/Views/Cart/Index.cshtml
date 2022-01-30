@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Shop.Models.Article>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+
+<br><br>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nazwa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Photo)
+            </th>
+            <th>Liczba</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count() == 0)
+        {
+           <tr>
+               <td colspan="5" style="text-align: center">
+                   <h2>Cart is empty!</h2>
+               </td>
+           </tr>
+        } 
+        else 
+        {
+        @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nazwa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Nazwa)
+            </td>
+            <td>
+                @if (item.Photo == "noimage.jpg")
+                {
+                    <img src = "@("~/image/" + item.Photo)" asp-append-version=true width="75px" height="75px" /> 
+                }
+                else
+                {
+                    <img src = "@("~/upload/" + item.Photo)" asp-append-version=true width="75px" height="75px" /> 
+                }
+            </td>
+            <td>
+                <a asp-action="MinusOne" asp-route-id="@item.Id">-</a><p style="display: inline">&nbsp;&nbsp;</p>
+                @ViewData[$"countArt{item.Id}"]
+                <p style="display: inline">&nbsp;</p>
+                <a asp-action="PlusOne" asp-route-id="@item.Id">+</a><p style="display: inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+        }
+        <tr>
+            <td>
+                <p style="font-weight: bold">SUM</p>
+            </td>
+            <td colspan="4">
+                @ViewData["suma"]
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+@if (Model.Count() != 0)
+{
+    <p>
+        <input type="button" value="Złóż zamówienie" style="color: white; background-color: #1b6ec2" onclick="@("window.location.href='" + @Url.Action("Order", "Cart") + "'");" />
+    </p>
+}

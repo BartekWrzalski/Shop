@@ -1,0 +1,19 @@
+﻿#catNav {
+    border: 1px solid black;
+    border-radius: 3px;
+    width: 7em;
+    background-color: #eeeeee;
+}
+#catNav > ul {
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+#catNav > ul > li {
+    border-top: 1px solid black;
+    position: relative;
+}
+#catNav:hover > ul {
+    display: block;
+}

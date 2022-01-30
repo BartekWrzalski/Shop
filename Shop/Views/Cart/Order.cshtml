@@ -1,0 +1,99 @@
+﻿@model IEnumerable<Shop.Models.Article>
+
+@{
+    ViewData["Title"] = "Order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Order</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nazwa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Photo)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nazwa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Nazwa)
+            </td>
+            <td>
+                @if (item.Photo == "noimage.jpg")
+                {
+                    <img src = "@("~/image/" + item.Photo)" asp-append-version=true width="75px" height="75px" /> 
+                }
+                else
+                {
+                    <img src = "@("~/upload/" + item.Photo)" asp-append-version=true width="75px" height="75px" /> 
+                }
+            </td>
+        </tr>
+}       <tr>
+            <td>
+                <p style="font-weight: bold">SUM</p>
+            </td>
+            <td colspan="4">
+                @ViewData["suma"]
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<form asp-action="Confirm">
+    <div class="form-group">
+        <label class="control-label">Imię:</label>
+        <input type="text" name="imie" style="width: 20%" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Nazwisko:</label>
+        <input type="text" name="nazwisko" style="width: 20%" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Numer telefonu:</label>
+        <input type="tel" pattern="[0-9]{9}" style="width: 20%" name="telefon" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Adres:</label>
+        <input type="text" name="adres" style="width: 20%" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Kod pocztowy:</label>
+        <input type="text" pattern="[0-9]{2}-[0-9]{3}"  style="width: 20%" name="kod" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Miasto:</label>
+        <input type="text" name="miasto" style="width: 20%" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Wybierz sposób płatności:</label><br />
+        <input type="radio" id="blik" name="platnosc" value="BLIK" checked>
+        <label for="blik">BLIK</label><br>
+        <input type="radio" id="przelew" name="platnosc" value="PRZELEW">
+        <label for="przelew">Przelew</label><br>
+        <input type="radio" id="odbior" name="platnosc" value="ODBIOR">
+        <label for="odbior">Przy odbiorze</label><br>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Potwierdź" class="btn btn-primary" />
+    </div>
+</form>

@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewData["Title"] = "Confirm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 style="color: green">Zamówienie zaakceptowane</h2>
+
+<h4>Dane do wysyłki:</h4>
+<p>
+    <label>Dane odbiorcy: @ViewBag.nazwisko @ViewBag.imie</label>
+</p>
+<p>
+    <label>Numer telefonu: @ViewBag.telefon</label>
+</p>
+<p>
+    <label>Adres wysyłki: @ViewBag.adres, @ViewBag.kod @ViewBag.miasto</label>
+</p>
+<p>
+    <label>Sposób płatności: @ViewBag.platnosc</label>
+</p>
